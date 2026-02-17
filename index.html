@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSV Upload Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      position: relative;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(34, 197, 94, 0.12), transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(14, 165, 233, 0.12), transparent 40%),
+        #040b18;
+    }
+
+    .chart-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .chart-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.35));
+    }
+
+    .chart-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.95;
+    }
+
+    .candles line {
+      stroke: rgba(148, 163, 184, 0.55);
+      stroke-width: 2;
+    }
+
+    .candles rect.up {
+      fill: rgba(34, 197, 94, 0.55);
+    }
+
+    .candles rect.down {
+      fill: rgba(239, 68, 68, 0.5);
+    }
+
+    .trend-line {
+      fill: none;
+      stroke: #22d3ee;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.45));
+      stroke-dasharray: 1200;
+      stroke-dashoffset: 1200;
+      animation: drawLine 5s ease forwards infinite;
+    }
+
+    .trend-glow {
+      fill: none;
+      stroke: rgba(34, 211, 238, 0.2);
+      stroke-width: 10;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1200;
+      stroke-dashoffset: 1200;
+      animation: drawLine 5s ease forwards infinite;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+    }
+
+    .site-header,
+    .site-footer {
+      background: rgba(3, 7, 18, 0.6);
+      backdrop-filter: blur(6px);
+      border-color: rgba(148, 163, 184, 0.2);
+      color: #e2e8f0;
+    }
+
+    .site-header p,
+    .site-footer small {
+      color: rgba(226, 232, 240, 0.8);
+    }
+
+    .upload-card {
+      background: rgba(6, 14, 29, 0.82);
+      border-color: rgba(148, 163, 184, 0.28);
+      box-shadow: 0 20px 65px rgba(2, 6, 23, 0.55);
+      backdrop-filter: blur(10px);
+    }
+
+    .dropzone {
+      background: rgba(15, 23, 42, 0.5);
+      border-color: rgba(148, 163, 184, 0.32);
+      color: #e2e8f0;
+    }
+
+    .dropzone h2,
+    .lead {
+      color: #f8fafc;
+    }
+
+    .muted,
+    .support-text {
+      color: #94a3b8;
+    }
+
+    .dropzone:hover,
+    .dropzone.dragover {
+      background: rgba(15, 23, 42, 0.78);
+      border-color: rgba(34, 211, 238, 0.7);
+    }
+
+    @keyframes drawLine {
+      0% {
+        stroke-dashoffset: 1200;
+      }
+      40%,
+      100% {
+        stroke-dashoffset: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="chart-bg" aria-hidden="true">
+    <div class="chart-grid"></div>
+    <svg class="chart-svg" viewBox="0 0 1600 900" preserveAspectRatio="none">
+      <g class="candles">
+        <line x1="120" y1="650" x2="120" y2="540" /><rect class="up" x="109" y="560" width="22" height="60" />
+        <line x1="220" y1="620" x2="220" y2="500" /><rect class="up" x="209" y="520" width="22" height="70" />
+        <line x1="320" y1="590" x2="320" y2="430" /><rect class="up" x="309" y="470" width="22" height="80" />
+        <line x1="420" y1="610" x2="420" y2="480" /><rect class="down" x="409" y="500" width="22" height="75" />
+        <line x1="520" y1="570" x2="520" y2="390" /><rect class="up" x="509" y="420" width="22" height="95" />
+        <line x1="620" y1="540" x2="620" y2="350" /><rect class="up" x="609" y="380" width="22" height="105" />
+        <line x1="720" y1="560" x2="720" y2="430" /><rect class="down" x="709" y="455" width="22" height="75" />
+        <line x1="820" y1="530" x2="820" y2="320" /><rect class="up" x="809" y="350" width="22" height="120" />
+        <line x1="920" y1="510" x2="920" y2="290" /><rect class="up" x="909" y="330" width="22" height="130" />
+        <line x1="1020" y1="500" x2="1020" y2="280" /><rect class="up" x="1009" y="315" width="22" height="130" />
+        <line x1="1120" y1="540" x2="1120" y2="360" /><rect class="down" x="1109" y="390" width="22" height="110" />
+        <line x1="1220" y1="500" x2="1220" y2="260" /><rect class="up" x="1209" y="300" width="22" height="130" />
+        <line x1="1320" y1="470" x2="1320" y2="220" /><rect class="up" x="1309" y="260" width="22" height="145" />
+        <line x1="1420" y1="450" x2="1420" y2="180" /><rect class="up" x="1409" y="215" width="22" height="165" />
+      </g>
+
+      <path class="trend-glow" d="M70,640 C180,620 220,570 310,540 C410,500 430,520 520,470 C620,410 650,430 760,390 C840,360 880,340 980,310 C1080,280 1150,290 1260,245 C1370,200 1440,220 1530,150" />
+      <path class="trend-line" d="M70,640 C180,620 220,570 310,540 C410,500 430,520 520,470 C620,410 650,430 760,390 C840,360 880,340 980,310 C1080,280 1150,290 1260,245 C1370,200 1440,220 1530,150" />
+    </svg>
+  </div>
+
+  <div class="page">
+    <header class="site-header">
+      <h1>CSV Upload Portal</h1>
+      <p>Upload and validate your CSV file before processing.</p>
+    </header>
+
+    <main class="content">
+      <section class="upload-card" aria-labelledby="upload-title">
+        <div
+          id="dropzone"
+          class="dropzone"
+          role="button"
+          tabindex="0"
+          aria-describedby="upload-help upload-status upload-error"
+        >
+          <div id="icon-wrap" class="icon-wrap" aria-hidden="true">
+            <svg class="icon icon-upload" viewBox="0 0 24 24" fill="none">
+              <path d="M12 16V4M12 4L8 8M12 4L16 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 16.5V18C4 19.1046 4.89543 20 6 20H18C19.1046 20 20 19.1046 20 18V16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <svg class="icon icon-success" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+              <path d="M8 12.5L10.8 15.3L16 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <h2 id="upload-title">Upload Your CSV File</h2>
+          <p id="upload-help" class="lead">Drag &amp; drop your file here</p>
+          <p class="muted">or</p>
+          <button id="browseBtn" type="button" class="browse-btn">Browse Files</button>
+          <input id="fileInput" type="file" accept=".csv,text/csv" hidden>
+
+          <p class="support-text">Supported format: .csv</p>
+          <p class="support-text">Max file size: 10MB</p>
+
+          <p id="upload-status" class="status" aria-live="polite"></p>
+          <p id="upload-error" class="error" aria-live="polite"></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <small>Front-end only preview. Backend integration coming next.</small>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
