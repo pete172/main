@@ -3,213 +3,445 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CSV Upload Portal</title>
+  <title>MailPilot AI — Email Agent Landing Page</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body {
-      position: relative;
-      overflow-x: hidden;
-      background:
-        radial-gradient(circle at 15% 15%, rgba(34, 197, 94, 0.12), transparent 45%),
-        radial-gradient(circle at 85% 85%, rgba(14, 165, 233, 0.12), transparent 40%),
-        #040b18;
+    :root {
+      --bg: #050816;
+      --surface: rgba(14, 22, 45, 0.65);
+      --surface-strong: rgba(17, 27, 54, 0.85);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #5eead4;
+      --secondary: #60a5fa;
+      --accent: #a78bfa;
+      --border: rgba(148, 163, 184, 0.2);
+      --success: #34d399;
     }
 
-    .chart-bg {
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(96, 165, 250, 0.22), transparent 36%),
+        radial-gradient(circle at 82% 12%, rgba(167, 139, 250, 0.24), transparent 32%),
+        radial-gradient(circle at 40% 90%, rgba(94, 234, 212, 0.18), transparent 40%),
+        var(--bg);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .container {
+      width: min(1120px, 92vw);
+      margin: 0 auto;
+    }
+
+    .glow {
       position: fixed;
       inset: 0;
-      z-index: 0;
       pointer-events: none;
+      z-index: 0;
       overflow: hidden;
     }
 
-    .chart-grid {
+    .glow::before,
+    .glow::after {
+      content: "";
       position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
-      background-size: 48px 48px;
-      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.35));
+      border-radius: 999px;
+      filter: blur(70px);
+      opacity: 0.45;
     }
 
-    .chart-svg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0.95;
+    .glow::before {
+      width: 260px;
+      height: 260px;
+      top: 18%;
+      left: -70px;
+      background: var(--secondary);
+      animation: float 10s ease-in-out infinite;
     }
 
-    .candles line {
-      stroke: rgba(148, 163, 184, 0.55);
-      stroke-width: 2;
+    .glow::after {
+      width: 340px;
+      height: 340px;
+      right: -140px;
+      top: 50%;
+      background: var(--accent);
+      animation: float 12s ease-in-out infinite reverse;
     }
 
-    .candles rect.up {
-      fill: rgba(34, 197, 94, 0.55);
-    }
-
-    .candles rect.down {
-      fill: rgba(239, 68, 68, 0.5);
-    }
-
-    .trend-line {
-      fill: none;
-      stroke: #22d3ee;
-      stroke-width: 4;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.45));
-      stroke-dasharray: 1200;
-      stroke-dashoffset: 1200;
-      animation: drawLine 5s ease forwards infinite;
-    }
-
-    .trend-glow {
-      fill: none;
-      stroke: rgba(34, 211, 238, 0.2);
-      stroke-width: 10;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dasharray: 1200;
-      stroke-dashoffset: 1200;
-      animation: drawLine 5s ease forwards infinite;
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-18px); }
     }
 
     .page {
       position: relative;
       z-index: 1;
+      padding: 28px 0 60px;
     }
 
-    .site-header,
-    .site-footer {
-      background: rgba(3, 7, 18, 0.6);
-      backdrop-filter: blur(6px);
-      border-color: rgba(148, 163, 184, 0.2);
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 62px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #032229;
+      font-weight: 800;
+      box-shadow: 0 8px 24px rgba(96, 165, 250, 0.35);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      align-items: stretch;
+      margin-bottom: 34px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: var(--surface);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 22px 55px rgba(2, 6, 23, 0.45);
+    }
+
+    .hero-copy {
+      padding: 44px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(94, 234, 212, 0.35);
+      color: var(--primary);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+      background: rgba(15, 32, 52, 0.45);
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 54ch;
+      margin-bottom: 24px;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 11px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #041826;
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.35);
+    }
+
+    .btn-secondary {
+      border-color: rgba(148, 163, 184, 0.35);
+      color: #dbeafe;
+      background: rgba(15, 23, 42, 0.55);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-side {
+      padding: 24px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .mail-preview {
+      border-radius: 16px;
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+      padding: 16px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .tag {
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(52, 211, 153, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+    }
+
+    .mail-preview p {
+      font-size: 0.9rem;
       color: #e2e8f0;
+      margin-bottom: 8px;
     }
 
-    .site-header p,
-    .site-footer small {
-      color: rgba(226, 232, 240, 0.8);
+    .progress {
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.24);
+      overflow: hidden;
     }
 
-    .upload-card {
-      background: rgba(6, 14, 29, 0.82);
-      border-color: rgba(148, 163, 184, 0.28);
-      box-shadow: 0 20px 65px rgba(2, 6, 23, 0.55);
-      backdrop-filter: blur(10px);
+    .progress > span {
+      display: block;
+      height: 100%;
+      width: 82%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
     }
 
-    .dropzone {
-      background: rgba(15, 23, 42, 0.5);
-      border-color: rgba(148, 163, 184, 0.32);
-      color: #e2e8f0;
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 16px 0 34px;
     }
 
-    .dropzone h2,
-    .lead {
-      color: #f8fafc;
+    .feature {
+      padding: 22px;
     }
 
-    .muted,
-    .support-text {
-      color: #94a3b8;
+    .feature h3 {
+      margin: 10px 0 8px;
+      font-size: 1.05rem;
     }
 
-    .dropzone:hover,
-    .dropzone.dragover {
-      background: rgba(15, 23, 42, 0.78);
-      border-color: rgba(34, 211, 238, 0.7);
+    .feature p {
+      color: var(--muted);
+      font-size: 0.92rem;
     }
 
-    @keyframes drawLine {
-      0% {
-        stroke-dashoffset: 1200;
+    .icon-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: #09121f;
+      font-size: 1rem;
+      font-weight: 700;
+      background: linear-gradient(140deg, var(--secondary), var(--primary));
+    }
+
+    .waitlist {
+      padding: 28px;
+      display: grid;
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    .waitlist h2 {
+      font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+      letter-spacing: -0.01em;
+    }
+
+    .waitlist p {
+      color: var(--muted);
+      max-width: 60ch;
+    }
+
+    .waitlist form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .waitlist input {
+      flex: 1 1 280px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.36);
+      background: rgba(15, 23, 42, 0.62);
+      color: var(--text);
+      padding: 12px 13px;
+      font: inherit;
+    }
+
+    .waitlist small {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    footer {
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.82rem;
+      padding-top: 10px;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .features {
+        grid-template-columns: 1fr;
       }
-      40%,
-      100% {
-        stroke-dashoffset: 0;
+
+      .hero-copy {
+        padding: 30px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="chart-bg" aria-hidden="true">
-    <div class="chart-grid"></div>
-    <svg class="chart-svg" viewBox="0 0 1600 900" preserveAspectRatio="none">
-      <g class="candles">
-        <line x1="120" y1="650" x2="120" y2="540" /><rect class="up" x="109" y="560" width="22" height="60" />
-        <line x1="220" y1="620" x2="220" y2="500" /><rect class="up" x="209" y="520" width="22" height="70" />
-        <line x1="320" y1="590" x2="320" y2="430" /><rect class="up" x="309" y="470" width="22" height="80" />
-        <line x1="420" y1="610" x2="420" y2="480" /><rect class="down" x="409" y="500" width="22" height="75" />
-        <line x1="520" y1="570" x2="520" y2="390" /><rect class="up" x="509" y="420" width="22" height="95" />
-        <line x1="620" y1="540" x2="620" y2="350" /><rect class="up" x="609" y="380" width="22" height="105" />
-        <line x1="720" y1="560" x2="720" y2="430" /><rect class="down" x="709" y="455" width="22" height="75" />
-        <line x1="820" y1="530" x2="820" y2="320" /><rect class="up" x="809" y="350" width="22" height="120" />
-        <line x1="920" y1="510" x2="920" y2="290" /><rect class="up" x="909" y="330" width="22" height="130" />
-        <line x1="1020" y1="500" x2="1020" y2="280" /><rect class="up" x="1009" y="315" width="22" height="130" />
-        <line x1="1120" y1="540" x2="1120" y2="360" /><rect class="down" x="1109" y="390" width="22" height="110" />
-        <line x1="1220" y1="500" x2="1220" y2="260" /><rect class="up" x="1209" y="300" width="22" height="130" />
-        <line x1="1320" y1="470" x2="1320" y2="220" /><rect class="up" x="1309" y="260" width="22" height="145" />
-        <line x1="1420" y1="450" x2="1420" y2="180" /><rect class="up" x="1409" y="215" width="22" height="165" />
-      </g>
-
-      <path class="trend-glow" d="M70,640 C180,620 220,570 310,540 C410,500 430,520 520,470 C620,410 650,430 760,390 C840,360 880,340 980,310 C1080,280 1150,290 1260,245 C1370,200 1440,220 1530,150" />
-      <path class="trend-line" d="M70,640 C180,620 220,570 310,540 C410,500 430,520 520,470 C620,410 650,430 760,390 C840,360 880,340 980,310 C1080,280 1150,290 1260,245 C1370,200 1440,220 1530,150" />
-    </svg>
-  </div>
-
-  <div class="page">
-    <header class="site-header">
-      <h1>CSV Upload Portal</h1>
-      <p>Upload and validate your CSV file before processing.</p>
+  <div class="glow" aria-hidden="true"></div>
+  <div class="page container">
+    <header class="topbar">
+      <div class="logo">
+        <span class="logo-mark">M</span>
+        <span>MailPilot AI</span>
+      </div>
+      <a class="btn btn-secondary" href="#waitlist">Join Waitlist</a>
     </header>
 
-    <main class="content">
-      <section class="upload-card" aria-labelledby="upload-title">
-        <div
-          id="dropzone"
-          class="dropzone"
-          role="button"
-          tabindex="0"
-          aria-describedby="upload-help upload-status upload-error"
-        >
-          <div id="icon-wrap" class="icon-wrap" aria-hidden="true">
-            <svg class="icon icon-upload" viewBox="0 0 24 24" fill="none">
-              <path d="M12 16V4M12 4L8 8M12 4L16 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M4 16.5V18C4 19.1046 4.89543 20 6 20H18C19.1046 20 20 19.1046 20 18V16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <svg class="icon icon-success" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
-              <path d="M8 12.5L10.8 15.3L16 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+    <main>
+      <section class="hero">
+        <article class="card hero-copy">
+          <span class="pill">🚀 Standalone Email AI Agent</span>
+          <h1>Your inbox, handled automatically.</h1>
+          <p class="subtitle">
+            MailPilot AI drafts replies, prioritizes high-impact messages, follows up on leads,
+            and keeps your conversations moving while you focus on deep work.
+          </p>
+          <div class="cta-row">
+            <a href="#waitlist" class="btn btn-primary">Get Early Access</a>
+            <a href="#features" class="btn btn-secondary">Explore Features</a>
           </div>
+          <div class="hero-meta">
+            <span>✓ Human-like responses</span>
+            <span>✓ Smart triage rules</span>
+            <span>✓ Works 24/7</span>
+          </div>
+        </article>
 
-          <h2 id="upload-title">Upload Your CSV File</h2>
-          <p id="upload-help" class="lead">Drag &amp; drop your file here</p>
-          <p class="muted">or</p>
-          <button id="browseBtn" type="button" class="browse-btn">Browse Files</button>
-          <input id="fileInput" type="file" accept=".csv,text/csv" hidden>
+        <aside class="card hero-side" aria-label="Live productivity preview">
+          <div class="mail-preview">
+            <div class="row">
+              <strong>Auto-Reply Queue</strong>
+              <span class="tag">Active</span>
+            </div>
+            <p><strong>From:</strong> sam@pipelinehq.com</p>
+            <p><strong>Subject:</strong> Proposal follow-up & timeline</p>
+            <p>Draft ready in your tone with suggested next steps and meeting slots.</p>
+            <div class="progress"><span></span></div>
+          </div>
+          <div class="mail-preview">
+            <div class="row">
+              <strong>Priority Engine</strong>
+              <small>Response urgency: High</small>
+            </div>
+            <p>Detected revenue opportunity in 2 emails and escalated to "Today".</p>
+          </div>
+        </aside>
+      </section>
 
-          <p class="support-text">Supported format: .csv</p>
-          <p class="support-text">Max file size: 10MB</p>
+      <section id="features" class="features" aria-label="Feature highlights">
+        <article class="card feature">
+          <div class="icon-badge">✉</div>
+          <h3>Autonomous Drafting</h3>
+          <p>Generates polished replies from your voice profile, brand style, and preferred call-to-actions.</p>
+        </article>
+        <article class="card feature">
+          <div class="icon-badge">⚡</div>
+          <h3>Intent Detection</h3>
+          <p>Understands sender intent and routes each email to the right priority, folder, and workflow in seconds.</p>
+        </article>
+        <article class="card feature">
+          <div class="icon-badge">📈</div>
+          <h3>Conversion Follow-ups</h3>
+          <p>Automatically schedules thoughtful follow-ups so leads, partners, and clients never go cold.</p>
+        </article>
+      </section>
 
-          <p id="upload-status" class="status" aria-live="polite"></p>
-          <p id="upload-error" class="error" aria-live="polite"></p>
-        </div>
+      <section id="waitlist" class="card waitlist" aria-labelledby="waitlist-title">
+        <h2 id="waitlist-title">Be first to launch with MailPilot AI</h2>
+        <p>
+          This is a front-end preview of the upcoming standalone email AI agent. Backend connectivity,
+          account onboarding, and provider integrations are coming next.
+        </p>
+        <form>
+          <label for="email" class="sr-only" style="position:absolute;left:-9999px;">Email address</label>
+          <input id="email" type="email" placeholder="Enter your work email" required>
+          <button type="submit" class="btn btn-primary">Request Invite</button>
+        </form>
+        <small>Demo UI only — form submission is not connected yet.</small>
       </section>
     </main>
 
-    <footer class="site-footer">
-      <small>Front-end only preview. Backend integration coming next.</small>
+    <footer>
+      Front-end only landing page • Built for upcoming standalone email AI agent release.
     </footer>
   </div>
-
-  <script src="script.js"></script>
 </body>
 </html>
